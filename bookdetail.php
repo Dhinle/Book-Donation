@@ -1,6 +1,30 @@
+<?php
+include("conn.php");
+session_start();
+$id=$_GET['id'];
+$query="select * from book where `book`.`b_id`= '$id'";
+$query1=mysqli_query($conn,$query);
+$ros=mysqli_fetch_array($query1);
+$book_name=$ros['booksname'];
+$auth_name=$ros['authorname'];
+
+if(isset($_POST['sub'])){
+    
+$query="select * from book where `book`.`b_id`= '$id'";
+$query1=mysqli_query($conn,$query);
+$ros=mysqli_fetch_array($query1);
+$path=$ros['path'];
+header('content-Disposition: attachment;filename = '.$id.'');
+header('content-type:application/pdf');
+header('content-length='.filesize($path));
+readfile($path);
+
+}
+?>
+
 <!DOCTYPE html>
 <html>
-<body>
+<head>
 
 <style>
 *{
@@ -52,42 +76,59 @@
 </style>
 <section class="sub-header">
 <nav> 
-  <a href="index.html"><img src="images/book.logo.png"></a>
+  <a href="index.php"><img src="images/book.logo.png"></a>
   <div class="nav-links">
     <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="login.php">Log In</a></li>
+      <li><a href="library.php">Library</a></li>
+      <li><a href="account.php">My Account</a></li>
       <li><a href="about.html">About</a></li>
     </ul>
   </div>
 </nav>
 </section>
+</div> 
 
 </body>
 </html>
 
 <head>
-    <title>Homepage</title>
+    <title>Library</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js" defer></script>
     <script src="validation.js" defer></script>
 </head>
 <body>
-    
-	<div class="text-box">
-        <a href="index.html"><img src="images/book.background.jpg"></a>
-		<h1>eBooks Only</h1>
-		<p>eBooks Only is a non-profit organization that provides a place to donate or use books for free!</p>
-		<a href="signup.html" class="hero-btn">Register now to donate or use!</a>
-	</div>
+
+<!----bookdetail Content---->
+
+  <div class="book-detail">
+          <h2>Book Name</h2>
+          <?php if (isset($ros)): ?>
+          <h3><?= htmlspecialchars($ros["booksname"]) ?></h3>
+          <?php endif; ?>
+          <h2>Author</h2>
+          <?php if (isset($ros)): ?>
+          <h3><?= htmlspecialchars($ros["authorname"]) ?></h3>
+          <?php endif; ?>
+          
+  </div> 
+      <tr>
+        <td>
+          
+          <h2><a href="download.php?file=<?= htmlspecialchars($ros["booksname"]) ?>.pdf">Download Book</a></h2>
+        </td>
+      </tr>
+
+</body>
+</html>
 
 <!----- Footer----->
 
 <section class="footer">
 	<p>Have a question? <a href="contact.html" class="hero-btn">Contact Us</a></p>
-	<p>Copyright &#169 2023 eBooks Only | All Rights Reserved.</p>
-</section>  
+	<p>Copyright &#169 2023 eBooks Only | All Rights Reserved.</p>	
+</section>
 
 </body>
 </html>

@@ -6,25 +6,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     $mysqli = require __DIR__ . "/database.php";
     
-    $sql = sprintf("SELECT * FROM user
+    $sql = sprintf("SELECT * FROM adminLog
                     WHERE email = '%s'",
                    $mysqli->real_escape_string($_POST["email"]));
     
     $result = $mysqli->query($sql);
     
-    $user = $result->fetch_assoc();
+    $admin = $result->fetch_assoc();
     
-    if ($user) {
+    if ($admin) {
         
-        if (password_verify($_POST["password"], $user["password_hash"])) {
+        if (password_verify($_POST["password"], $admin["password_hash"])) {
             
             session_start();
             
             session_regenerate_id();
             
-            $_SESSION["user_id"] = $user["id"];
+            $_SESSION["admin_id"] = $admin["id"];
             
-            header("Location: index.php");
+            header("Location: adminindex.php");
             exit;
         }
     }
@@ -101,13 +101,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </body>
 </html>
 
-    <title>Login to eBooks Only</title>
+    <title>Admin Login</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
 </head>
 <body>
     
-    <h1>Login to eBooks Only</h1>
+    <h1>Admin Login</h1>
     
     <?php if ($is_invalid): ?>
         <em>Invalid Email or Password</em>
@@ -146,8 +146,8 @@ function togglePasswordVisibility() {
 <!----- Footer----->
 
 <section class="footer">
-  <p>Have a question? <a href="contact.html" class="hero-btn">Contact Us</a></p>
-	<p>Copyright &#169 2023 eBooks Only | All Rights Reserved.</p>	
+	<h4>eBooks Only</h4>
+	<p>Copyright &#169 2023 eBooks Only All Rights Reserved.</p>	
 </section>
 
 </body>

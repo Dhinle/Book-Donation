@@ -18,48 +18,37 @@ if (isset($_SESSION["user_id"])) {
 }
 
 if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['sub']))
+
 {
- $bookname=$_POST['booksname'];
- $authorname = $_POST['authorname'];
- $genre = $_POST['genre'];
 
- if($bookname!="" && $authorname!="")
- { 
+  $name=$_POST['name'];
+  $email=$_POST['email'];
+  $id=$_SESSION['user_id'];  
+  $password_hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-    $file_name = $_FILES['file']['name'];
-    $new_file_name=$bookname.".pdf";
-      $file_tmp_loc = $_FILES['file']['tmp_name'];
-    $file_store = "ebooks/";
-      $fpath=$file_store.$new_file_name;
-    $accepted=array("pdf");
+  if($name!="" && $email!="" && $id!="" )
+  {  
+     
+      $sql="UPDATE `user` SET". "`name` ='$name',"."`email` = '$email',"."`password_hash`='$password_hash'". " WHERE `user`.`id` ="."'$id'";
+      
 
-    if(!in_array(pathinfo($file_name,PATHINFO_EXTENSION),$accepted))
-    {
-    $msg= $file_name."<br> is not acceptable file type";
-    }
-
+	$data1 = mysqli_query($conn,$sql);
+	
+      if($data1)
+	  {
+	    $msg= "Successfully Edit";
+	  }
+	  else
+	  {
+	    $msg= "Something Went Wrong..";
+	  }
+}
     else
-    {
-      move_uploaded_file($_FILES['file']['tmp_name'],$file_store.$new_file_name);
-    }
-    $insert="INSERT INTO `book`(`booksname`,`authorname`,`genre`,`file_name`,`path`) VALUES('".$bookname."','".$authorname."','".$genre."','".$new_file_name."','".$fpath."')";
-      $data=mysqli_query($conn,$insert); 
-      if($data)
-      {
-      
-      
-        $msg= "Sccessfully Added";
-      }
-        else{
-            $msg="Something Went Wrong";
-        }
-     }
-      else
-      {
-        $msg= "All field are required";
-      }
+	  {
+	   $msg="all field are required";
+	  }
+}
 
- }
 ?>
 <!DOCTYPE html>
 
@@ -129,7 +118,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['sub']))
 
   <section class="sub-header">
 <nav> 
-  <a href="index.php"><img src="images/book.logo.png"></a>
+  <a href="index.html"><img src="images/book.logo.png"></a>
   <div class="nav-links">
     <ul>
       <li><a href="library.php">Library</a></li>
@@ -143,7 +132,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['sub']))
     <div class="user-container">
       <div class="menu-box">
         <div>
-          <a onclick="tabs(0)" class="tab-active">
+          <a href="account.php" class="tab-active">
             <i class="fa fa-user"></i>
           </a>
 
@@ -156,15 +145,26 @@ if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['sub']))
       <div class="info-box">
         <div class="personal-info tabShow">
           <h1>Personal Info</h1>
-          <h2>Name</h2>
-          <?php if (isset($user)): ?>
-          <h3> <?= htmlspecialchars($user["name"]) ?></h3>      
-          <?php endif; ?>
-          <h2>Email</h2>
-          <?php if (isset($user)): ?>
-          <h3> <?= htmlspecialchars($user["email"]) ?></h3>      
-          <?php endif; ?>
-          <a href="editinfo.php"><button>Edit</button></a>
+          <form action="editinfo.php" method="POST" enctype="multipart/form-data">
+                  <tr>
+                  <h2>User Name:</h2>
+                  <td><input type="text" name="name" placeholder="User Name" require/></td>
+                  </tr>
+
+                  <tr>
+                  <h2>User Email:</h2>
+                  <td><input type="text" name="email" placeholder="User Email" require/></td>
+                  </tr>
+                  <tr>
+                  <h2>User Password:</h2>
+                  <td><input type="text" name="password" placeholder="User password" require/></td>
+                  </tr>
+
+                  <tr>
+                  <td><h2><input type="submit" name="sub" value="SUBMIT"/></h2></td>
+                  </tr>
+                </form>
+          
         </form>
         </div>
         <div class="download tabShow">
@@ -178,7 +178,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['sub']))
         </div>
         <!-- Upload Book -->
         <div class="upload tabShow">
-          <form action="" method="POST" enctype="multipart/form-data">
+          <form action="addbook.php" method="POST" enctype="multipart/form-data">
           <tr>
             <h2>BOOK NAME:</h2>
             <td><input type="text" name="booksname" placeholder="" required/></td>
@@ -256,4 +256,3 @@ if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['sub']))
 	<div class="footer">
 	  <p></p>
 	</div>
-
