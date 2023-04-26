@@ -34,7 +34,7 @@
 
 <section class="footer">
 	<h4>eBooks Only</h4>
-	<p>Created by Tyvan Vang</p>	
+	<p>Created by Tyvan Vang, Thanh Nguyen,  Abdirahmano Sharmake, Annicette Ndjonti </p>	
 </section>
 
 
